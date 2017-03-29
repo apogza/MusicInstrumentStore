@@ -1,8 +1,9 @@
 package Managers.Interfaces;
 
 import java.io.IOException;
+import java.util.Collection;
 
-import ConsoleRepresenters.InstrumentRepresenter;
+import Instruments.Instrument;
 
 public interface IFileManager {
 	
@@ -12,30 +13,24 @@ public interface IFileManager {
 	 * @return
 	 * @throws IOException
 	 */
-	public String[] readInstrumentsFile() throws IOException;
+	public Collection<Instrument> readInstruments() throws IOException;
 	
 	/**
-	 * 
-	 * @param instrumentRepresenter
+	 * Save instruments to a file
+	 * @param collection
 	 */
-	public void addInstrumentToFile(InstrumentRepresenter instrumentRepresenter);
-	
-	/**
-	 * 
-	 * @param catalogId
-	 */
-	public void removeInstrumentFromFile(int catalogId);
+	public void saveInstruments(Collection<Instrument> collection) throws IOException; 
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public String getFileName();
+	public String getFolder();
 	
 	/**
 	 * 
 	 * @param fileName
 	 */
 	
-	public void setFileName(String fileName);
+	public void setFolder(String fileName);
 }

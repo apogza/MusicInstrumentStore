@@ -6,7 +6,7 @@ import java.io.IOException;
 import Instruments.Keys;
 import Utils.StringUtils;
 
-public class KeysRepresenter extends InstrumentRepresenter {
+public abstract class KeysRepresenter extends InstrumentRepresenter {
 	
 	private Keys instrument;
 	

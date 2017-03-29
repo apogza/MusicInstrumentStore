@@ -2,8 +2,10 @@ package Managers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
 
 import ConsoleRepresenters.AcousticGuitarRepresenter;
 import ConsoleRepresenters.DrumsRepresenter;
@@ -19,6 +21,7 @@ import Instruments.Instrument;
 import Instruments.Piano;
 import Instruments.Synthesizer;
 import Instruments.Violin;
+import Managers.Interfaces.IFileManager;
 import Managers.Interfaces.IInstrumentManager;
 import Managers.Interfaces.ISearchInstrumentManager;
 import Managers.Interfaces.ISortInstrumentManager;
@@ -37,6 +40,8 @@ public class InstrumentManager implements IInstrumentManager {
 	
 	private ISortInstrumentManager sortManager;
 	private ISearchInstrumentManager searchManager;
+	private IFileManager fileManager;
+	
 	private BufferedReader inReader;
 	
 	
@@ -45,9 +50,14 @@ public class InstrumentManager implements IInstrumentManager {
 	/**
 	 * Two-parameter constructor 
 	 */
-	public InstrumentManager(BufferedReader bufferedReader, ISortInstrumentManager sortManager, ISearchInstrumentManager searchManager) {
+	public InstrumentManager(BufferedReader bufferedReader, 
+			ISortInstrumentManager sortManager, 
+			ISearchInstrumentManager searchManager,
+			IFileManager fileManager) {
 		this.sortManager = sortManager;
 		this.searchManager = searchManager;
+		this.fileManager = fileManager;
+		
 		inReader = bufferedReader;
 		
 		catalog = new HashMap<Integer, InstrumentRepresenter>();
@@ -77,7 +87,7 @@ public class InstrumentManager implements IInstrumentManager {
 	 * Display the menu, get the user choice and process it
 	 * @throws IOException
 	 */
-	public void menuLoop()throws IOException {
+	public void run() throws IOException {
 		int choice = 0;
 		do{
 			choice = getMenuChoice();
@@ -96,12 +106,10 @@ public class InstrumentManager implements IInstrumentManager {
 			getInstrumentsFromUser();
 			break;
 		case 2:
-			int searchChoice = searchManager.getMenuChoice();
-			searchManager.processMenuChoice(searchChoice);
+			searchManager.run();
 			break;
 		case 3:
-			int sortChoice = sortManager.getMenuChoice();
-			sortManager.processMenuChoice(sortChoice);
+			sortManager.run();
 			break;
 		case 4:
 			modifyInstrument();
@@ -110,11 +118,24 @@ public class InstrumentManager implements IInstrumentManager {
 			removeInstrument();
 			break;
 		case 6:
+			fileManager.saveInstruments(getInstruments());
 			break;
 		default:
-			System.out.println("Sorry, there is no such an option");
+			System.out.println(String.format("Sorry, there is no such an option %1", choice));
 			break;
 		}
+	}
+	
+	private Collection<Instrument> getInstruments(){
+		Vector<Instrument> instruments = new Vector<Instrument>();
+		
+		if(!catalog.isEmpty()){
+			for(InstrumentRepresenter representer: catalog.values()){
+				instruments.add(representer.getInstrument());
+			}
+		}
+		
+		return instruments;
 	}
 	
 	/**
@@ -147,7 +168,6 @@ public class InstrumentManager implements IInstrumentManager {
 			catalog.get(catalogNumber).getInfoFromUser();
 		else
 			System.out.println("No such instrument");
-			
 	}
 	
 	/**

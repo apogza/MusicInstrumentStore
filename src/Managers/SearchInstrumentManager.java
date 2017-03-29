@@ -29,33 +29,26 @@ public class SearchInstrumentManager implements ISearchInstrumentManager {
 		inReader = bufferedReader;
 	}
 	
-	@Override
 	public int getMenuChoice() throws IOException {
-		int choice = '0';
-		while(choice!= '4'){
-			System.out.println("\nPlease, select a search option (1, 2, 3, 4)");
-			System.out.println("1. Search by Manufacturer");
-			System.out.println("2. Search by Model");
-			System.out.println("3. Search by Catalog Number");
-			System.out.println("4. Quit to main menu");
-			
-			choice = new Double(ConsoleUtils.getNumValue("Enter your choice", inReader)).intValue();		
-		}
+		System.out.println("\nPlease, select a search option (1, 2, 3, 4)");
+		System.out.println("1. Search by Manufacturer");
+		System.out.println("2. Search by Model");
+		System.out.println("3. Search by Catalog Number");
+		System.out.println("4. Quit to main menu");
 		
-		return choice;
+		return ConsoleUtils.getNumIntValue("Enter your choice", inReader);
 	}
 
-	@Override
 	public void processMenuChoice(int choice) throws IOException {
 		switch(choice){
-		case 1: 
-			searchByManufacturer();
+		case 1: 		
+			searchInstrumentsByManufacturer(getSearchValue("Manufacturer"));
 			break;
 		case 2: 
-			searchByModel();
+			searchInstrumentsByModel(getSearchValue("Model"));
 			break;
 		case 3: 
-			searchByCatalogNumber();
+			searchInstrumentsByCatalogId(getSearchValue("Id"));
 			break;
 		case 4: 
 			break;
@@ -65,46 +58,62 @@ public class SearchInstrumentManager implements ISearchInstrumentManager {
 		}
 	}
 	
+	@Override
+	public void run() throws IOException {
+		int choice = 0;
+		do {
+			choice = getMenuChoice();
+			processMenuChoice(choice);
+		} while(choice < 4);
+	}
+	
 	/**
 	 * Search by manufacturer
 	 * @throws IOException
 	 */
 	
-	public void searchByManufacturer() throws IOException {
-		searchInstrument("Manufacturer", manufacturerMap);
+	public void searchInstrumentsByManufacturer(String manufacturer) throws IOException {
+		searchInstruments(manufacturer, manufacturerMap);
 	}
 	
 	/**
 	 * Search by model
 	 * @throws IOException
 	 */
-	public void searchByModel() throws IOException {
-		searchInstrument("Model", modelMap);
+	public void searchInstrumentsByModel(String model) throws IOException {
+		searchInstruments(model, modelMap);
 	}
 	
 	/**
 	 * Search by catalogNumber
 	 * @throws IOException
 	 */
-	public void searchByCatalogNumber() throws IOException{
-		searchInstrument("Catalog Number", catalogNumberMap);
+	public void searchInstrumentsByCatalogId(String Id) throws IOException{
+		searchInstruments(Id, catalogNumberMap);
+	}
+	
+	
+	public String getSearchValue(String prompt) throws IOException{
+		return Utils.ConsoleUtils.getStringValue(prompt, inReader);
+	}
+	
+	public int searchPrompt(String prompt) throws IOException{
+		return Utils.ConsoleUtils.getNumIntValue(prompt, inReader);
 	}
 	
 	/**
 	 * Private search that serves the public ones since the logic is quite similar
-	 * @param prompt
 	 * @param instrumentMap
 	 * @throws IOException
 	 */
-	private void searchInstrument(String prompt, Map<String, Vector<InstrumentRepresenter>> instrumentMap) 
+	private void searchInstruments(String searchKey, Map<String, Vector<InstrumentRepresenter>> instrumentMap) 
 			throws IOException{
 		
 		boolean foundInstruments = false;
 		
-		String searchKey = Utils.ConsoleUtils.getStringValue(prompt, inReader);
 		if(instrumentMap.containsKey(searchKey)){
 			for(InstrumentRepresenter instrument : instrumentMap.get(searchKey)){
-				System.out.println(instrument);
+				System.out.println(instrument.print());
 			}
 			foundInstruments = true;
 		}

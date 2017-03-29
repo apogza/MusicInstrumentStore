@@ -5,30 +5,38 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import Managers.InstrumentManager;
+import Managers.JsonFileManager;
 import Managers.SearchInstrumentManager;
 import Managers.SortInstrumentManager;
+import Managers.Interfaces.IFileManager;
+import Managers.Interfaces.IInstrumentManager;
 import Managers.Interfaces.ISearchInstrumentManager;
 import Managers.Interfaces.ISortInstrumentManager;
 
 public class Store {
-	public static void main(String[] args)throws IOException{
-		BufferedReader inReader = new BufferedReader(new InputStreamReader(System.in));
+	public static void main(String[] args) throws IOException{
+		String instrumentFolder = "instruments";
 		
-		ISearchInstrumentManager searchManager = new SearchInstrumentManager(inReader);
-		ISortInstrumentManager sortManager = new SortInstrumentManager(inReader);
+		BufferedReader inReader = null;
 		
-		InstrumentManager instrumentManager = new InstrumentManager(inReader, sortManager, searchManager);
-
 		try{
+			inReader = new BufferedReader(new InputStreamReader(System.in));
+			ISearchInstrumentManager searchManager = new SearchInstrumentManager(inReader);
+			ISortInstrumentManager sortManager = new SortInstrumentManager(inReader);
+			IFileManager fileManager = new JsonFileManager(instrumentFolder);
+
+			IInstrumentManager instrumentManager = new InstrumentManager(inReader, sortManager, searchManager, fileManager);
+			
 			System.out.println("Welcome to the Music Store");
-			instrumentManager.menuLoop();
+			instrumentManager.run();
 			System.out.println("Goodbye and come back soon!");
 		}
 		catch(IOException ex){
 			System.err.println("Caught IOException:" + ex.getMessage());
 		}
 		finally{
-			inReader.close();
+			if(inReader != null)
+				inReader.close();
 		}
 		
 		

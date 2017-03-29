@@ -6,20 +6,11 @@ import ConsoleRepresenters.InstrumentRepresenter;
 
 public interface IInstrumentManager {
 	
-	/**
-	 * Displays a a list of choices to the user
-	 * @return
-	 * @throws IOException
-	 */
-	public int getMenuChoice() throws IOException;
-	
-	/**
-	 * After the user has made their choice, process it
-	 * 
-	 * @param choice
-	 * @throws IOException
-	 */
-	public void processMenuChoice(int choice) throws IOException;
+	 /**
+	  * 
+	  * @throws IOException
+	  */
+	public void run() throws IOException;
 	
 	/**
 	 * Add a new file
@@ -32,5 +23,6 @@ public interface IInstrumentManager {
 	 * @param instrument
 	 */
 	public void removeInstrument(InstrumentRepresenter instrument);
+	
 
 }

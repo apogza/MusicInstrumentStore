@@ -33,25 +33,17 @@ public class SortInstrumentManager implements ISortInstrumentManager {
 		inReader = reader;
 	}
 	
-	@Override
 	public int getMenuChoice() throws IOException {
-		// TODO Auto-generated method stub
 		
-		int choice = 0;
-		while(choice != 4){
-			System.out.println("\nPlease, select a sort option(1, 2, or 3): ");
-			System.out.println("1. Sort by instrument type");
-			System.out.println("2. Sort by manufacturer");
-			System.out.println("3. Sort by price");
-			System.out.println("4. Quit to main menu");
+		System.out.println("\nPlease, select a sort option(1, 2, or 3): ");
+		System.out.println("1. Sort by instrument type");
+		System.out.println("2. Sort by manufacturer");
+		System.out.println("3. Sort by price");
+		System.out.println("4. Quit to main menu");
 			
-			choice = new Double(ConsoleUtils.getNumValue("Enter your choice", inReader)).intValue();
-
-		}
-		return choice;
+		return ConsoleUtils.getNumIntValue("Enter your choice", inReader);
 	}
 
-	@Override
 	public void processMenuChoice(int choice) throws IOException {
 		switch(choice){
 		case 1: 
@@ -69,6 +61,15 @@ public class SortInstrumentManager implements ISortInstrumentManager {
 			System.out.println("Sorry, there is no such an option");
 			break;
 		}
+	}
+	
+	@Override
+	public void run() throws IOException{
+		int choice = 0;
+		do {
+			choice = getMenuChoice();
+			processMenuChoice(choice);
+		} while(choice < 4);
 	}
 	
 	/**

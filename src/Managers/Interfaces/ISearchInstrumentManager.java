@@ -12,18 +12,18 @@ public interface ISearchInstrumentManager extends IInstrumentManager{
 	 * Search by manufacturer
 	 * @throws IOException
 	 */
-	void searchByManufacturer() throws IOException;
+	void searchInstrumentsByManufacturer(String manufacturer) throws IOException;
 	
 	/**
 	 * Search by model
 	 * @throws IOException
 	 */
-	void searchByModel() throws IOException;
+	void searchInstrumentsByModel(String model) throws IOException;
 	
 	/**
 	 * Search by catalogNumber
 	 * @throws IOException
 	 */
-	void searchByCatalogNumber() throws IOException;
+	void searchInstrumentsByCatalogId(String catalogId) throws IOException;
 	
 }
