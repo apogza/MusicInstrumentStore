@@ -2,6 +2,7 @@ package Managers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +55,7 @@ public class InstrumentManager implements IInstrumentManager {
 			ISortInstrumentManager sortManager, 
 			ISearchInstrumentManager searchManager,
 			IFileManager fileManager) {
+		
 		this.sortManager = sortManager;
 		this.searchManager = searchManager;
 		this.fileManager = fileManager;
@@ -62,6 +64,43 @@ public class InstrumentManager implements IInstrumentManager {
 		
 		catalog = new HashMap<Integer, InstrumentRepresenter>();
 		this.catalogNumber = 1;
+		
+		readInstruments();
+	}
+	
+	
+	/**
+	 * Read existing instruments
+	 * The file manager will give us instances of instruments
+	 * We need to create the proper representer for each instrument
+	 */
+	
+	private void readInstruments()  {
+		
+		try{
+			Collection<Instrument> instruments = fileManager.readInstruments();	
+			
+			for(Instrument instrument : instruments)
+			{
+				String representerClassName = "ConsoleRepresenters." + instrument.getClass().getSimpleName() + "Representer";
+				
+				try{
+					InstrumentRepresenter instrumentRepresenter = (InstrumentRepresenter)Class.forName(representerClassName)
+							.getDeclaredConstructor(new Class[]{BufferedReader.class, instrument.getClass()})
+							.newInstance(inReader, instrument);
+					
+					addInstrument(instrumentRepresenter);
+				}
+				catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | ClassNotFoundException ex)
+				{
+					System.err.println(String.format("Could not load class %s", representerClassName));
+				}
+			}
+		}
+		catch (IOException ex)
+		{
+			System.err.println("Error reading existing instruments");
+		}
 	}
 	
 	/**
@@ -126,6 +165,10 @@ public class InstrumentManager implements IInstrumentManager {
 		}
 	}
 	
+	/**
+	 * Return the list of instruments
+	 * @return
+	 */
 	private Collection<Instrument> getInstruments(){
 		Vector<Instrument> instruments = new Vector<Instrument>();
 		
@@ -250,7 +293,7 @@ public class InstrumentManager implements IInstrumentManager {
 	 * 
 	 * 
 	 */
-	private int classifyInstrument()throws IOException{
+	private int classifyInstrument() throws IOException {
 		System.out.println("\nWhat kind of an instrument you want to add?" + 
 				"\nSelect 1, 2, 3, 4, 5, 6, or 7");
 		System.out.println("1. An Acoustic Guitar");
@@ -266,12 +309,17 @@ public class InstrumentManager implements IInstrumentManager {
 
 	@Override
 	public void addInstrument(InstrumentRepresenter instrument) {
-		instrument.setCatalogNumber(catalogNumber);
+		if(instrument.getCatalogNumber() == 0) {
+			catalog.put(catalogNumber, instrument);
+			instrument.setCatalogNumber(catalogNumber++);
+		}
+		else {
+			catalog.put(instrument.getCatalogNumber(), instrument);
+			catalogNumber = instrument.getCatalogNumber() + 1; 
+		}
 		
-		catalog.put(catalogNumber, instrument);
 		sortManager.addInstrument(instrument);
 		searchManager.addInstrument(instrument);
-		catalogNumber++;
 	}
 
 	@Override

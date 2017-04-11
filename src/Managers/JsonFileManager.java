@@ -22,8 +22,12 @@ public class JsonFileManager implements IFileManager {
 	private File fileFolder;
 	private int maxId;
 
-	public JsonFileManager(String folder){
+	public JsonFileManager(String folder) throws IOException {
 		fileFolder = new File(folder);
+		
+		//make sure the folder exists
+		createFolder();
+		
 		gson = new GsonBuilder().setPrettyPrinting().create();
 	}
 	
@@ -106,10 +110,10 @@ public class JsonFileManager implements IFileManager {
 	}
 	
 	/*
-	 * 
+	 * Create the folder where all 
 	 */
 	private void createFolder() throws IOException{
-		if(!fileFolder.exists() && fileFolder.mkdir()){
+		if(!fileFolder.exists() && !fileFolder.mkdir()){
 			throw new IOException("Cannot find or create instrument file folder.");			
 		}
 	}
@@ -118,7 +122,7 @@ public class JsonFileManager implements IFileManager {
 	/**
 	 * To be used in order to clear all files in the directory
 	 */
-	private void clearFiles()
+	public void deleteInstruments()
 	{
 		File[] files = fileFolder.listFiles();
 		if(files != null){
@@ -143,7 +147,7 @@ public class JsonFileManager implements IFileManager {
 		//first, create the folder if it does not exists
 		createFolder();
 		//second, delete all existing files
-		clearFiles();
+		deleteInstruments();
 		
 		FileWriter fileWriter = null;
 		

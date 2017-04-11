@@ -19,7 +19,12 @@ public interface IFileManager {
 	 * Save instruments to a file
 	 * @param collection
 	 */
-	public void saveInstruments(Collection<Instrument> collection) throws IOException; 
+	public void saveInstruments(Collection<Instrument> collection) throws IOException;
+	
+	/**
+	 * Delete all instruments in the folder
+	 */
+	public void deleteInstruments();
 	
 	/**
 	 * 

@@ -16,7 +16,12 @@ import Managers.Interfaces.IFileManager;
 
 public class FileManagerTests {
 
-	IFileManager fileManager = new JsonFileManager("instruments/");
+	private IFileManager fileManager;
+	
+	public FileManagerTests() throws IOException {
+		fileManager = new JsonFileManager("test/instruments/");
+	}
+	
 	
 	@Test
 	public void testInstrumentToFile() throws IOException{
@@ -41,5 +46,7 @@ public class FileManagerTests {
 		
 		assertEquals(instrumentArray[0].getInstrumentType(), "Acoustic Guitar");
 		assertEquals(instrumentArray[1].getManufacturer(), "Ibanez");
+		
+		
 	}
 }
